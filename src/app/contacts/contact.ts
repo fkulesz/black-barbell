@@ -5,7 +5,7 @@ export class Contact {
   email: string;
   phone: string;
   address: string;
-  active: boolean;
+  active: string;
   role: string;
   comment: string;
 }
