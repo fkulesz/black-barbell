@@ -20,19 +20,19 @@
     </div>
     <div class="form-group">
       <label for="contact-address">Address</label>
-      <input class="form-control" name="contact-address" [(ngModel)]="contact.address" placeholder="0123456789"/>
+      <input class="form-control" name="contact-address" [(ngModel)]="contact.address" placeholder="Prądzyńskiego 54/31, Wrocław"/>
     </div>
     <div class="form-group">
       <label for="contact-active">Active</label>
-      <input class="form-control" name="contact-active" [(ngModel)]="contact.active" placeholder="0123456789"/>
+      <input class="form-control" name="contact-active" [(ngModel)]="contact.active" placeholder="YES"/>
     </div>
     <div class="form-group">
       <label for="contact-role">Role</label>
-      <input class="form-control" name="contact-role" [(ngModel)]="contact.role" placeholder="0123456789"/>
+      <input class="form-control" name="contact-role" [(ngModel)]="contact.role" placeholder="client"/>
     </div>
     <div class="form-group">
       <label for="contact-comment">Comment</label>
-      <input class="form-control" name="contact-comment" [(ngModel)]="contact.comment" placeholder="0123456789"/>
+      <input class="form-control" name="contact-comment" [(ngModel)]="contact.comment" placeholder="comment..."/>
     </div>
     <button class="btn btn-primary" *ngIf="!contact._id" (click)="createContact(contact)">Create</button>
     <button class="btn btn-info" *ngIf="contact._id" (click)="updateContact(contact)">Update</button>
