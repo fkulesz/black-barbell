@@ -45,7 +45,19 @@ function handleError(res, reason, message, code) {
  */
 
 app.get("/api/contacts", function(req, res) {
-  db.collection(CONTACTS_COLLECTION).find({}).toArray(function(err, docs) {
+  var name = req.query.name;
+  var lastname = req.query.forname;
+  var email = req.query.email;
+  var role = req.query.role;
+  var phone = req.query.phone;
+  var limit = parseInt(req.query.limit);
+  db.collection(CONTACTS_COLLECTION).find({
+    "name": name === undefined ? /.*/ : name,
+    "forname": lastname === undefined ? /.*/ : lastname,
+    "email": email === undefined ? /.*/ : email,
+    "role": role === undefined ? /.*/ : role,
+    "phone": phone === undefined ? /.*/ : phone
+  }).limit(limit === undefined ? 0 : limit).toArray(function(err, docs) {
     if (err) {
       handleError(res, err.message, "Failed to get contacts.");
     } else {
