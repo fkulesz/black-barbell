@@ -51,13 +51,26 @@ app.get("/api/contacts", function(req, res) {
   var role = req.query.role;
   var phone = req.query.phone;
   var limit = parseInt(req.query.limit);
+  var queryString = {};
+  if(typeof req.query.name !== undefined) {
+    queryString.name = new RegExp('/' + name + '/');
+  }
+  if(typeof req.query.name !== undefined) {
+    queryString.forname = new RegExp('/' + lastname + '/');
+  }
+  if(typeof req.query.name !== undefined) {
+    queryString.email = new RegExp('/' + email + '/');
+  }
+  if(typeof req.query.name !== undefined) {
+    queryString.role = new RegExp('/' + role + '/');
+  }
+  if(typeof req.query.name !== undefined) {
+    queryString.phone = new RegExp('/' + phone + '/');
+  }
+  limit = (limit === undefined ? 0 : limit);
   db.collection(CONTACTS_COLLECTION).find({
-    "name": name === undefined ? /.*/ : name,
-    "forname": lastname === undefined ? /.*/ : lastname,
-    "email": email === undefined ? /.*/ : email,
-    "role": role === undefined ? /.*/ : role,
-    "phone": phone === undefined ? /.*/ : phone
-  }).limit(limit === undefined ? 0 : limit).toArray(function(err, docs) {
+    queryString
+  }).limit(limit).toArray(function(err, docs) {
     if (err) {
       handleError(res, err.message, "Failed to get contacts.");
     } else {
