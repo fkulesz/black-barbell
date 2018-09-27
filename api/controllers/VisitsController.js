@@ -5,6 +5,7 @@ var Visit = require('../models/visit');
 exports.getVisits = (req, res) => {
   var date = req.query.date;
   var uid = req.params.id;
+  var limit = parseInt(req.query.limit);
   var queryString = {};
   if (typeof date !== 'undefined') {
     queryString.date = new Date(date);
@@ -12,7 +13,7 @@ exports.getVisits = (req, res) => {
   if (typeof uid !== 'undefined') {
     queryString.client = uid;
   }
-  var limit = (limit === undefined ? 0 : limit);
+  limit = (limit === undefined ? 0 : limit);
   Visit.find(
     queryString
   ).limit(limit).populate('client').exec(function (err, docs) {

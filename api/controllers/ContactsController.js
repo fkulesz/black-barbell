@@ -1,5 +1,4 @@
 var Contact = require('../models/contact');
-var Contact = require('../models/contact');
 var handleError = require('../config/app');
 
 exports.getContacts = (req, res) => {

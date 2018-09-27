@@ -4,6 +4,8 @@ var db = require('./api/config/db');
 var ticketRoutes = require('./api/routes/tickets');
 var contactRoutes = require('./api/routes/contacts');
 var visitRoutes = require('./api/routes/visits');
+var productRoutes = require('./api/routes/products');
+var transactionRoutes = require('./api/routes/transactions');
 
 var app = express();
 
@@ -25,3 +27,5 @@ var server = app.listen(process.env.PORT || 8080, function () {
 app.use('/', ticketRoutes);
 app.use('/', contactRoutes);
 app.use('/', visitRoutes);
+app.use('/', productRoutes);
+app.use('/', transactionRoutes);
