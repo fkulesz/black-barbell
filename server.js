@@ -52,25 +52,27 @@ app.get("/api/contacts", function(req, res) {
   var phone = req.query.phone;
   var limit = parseInt(req.query.limit);
   var queryString = {};
-  if(typeof req.query.name !== undefined) {
-    queryString.name = new RegExp('/' + name + '/');
+  queryString.deleted_at = null;
+  queryString.is_deleted = null;
+  if(typeof name !== 'undefined') {
+    queryString.name = new RegExp(name, 'i');
   }
-  if(typeof req.query.name !== undefined) {
-    queryString.forname = new RegExp('/' + lastname + '/');
+  if(typeof lastname !== 'undefined') {
+    queryString.forname = new RegExp(lastname, 'i');
   }
-  if(typeof req.query.name !== undefined) {
-    queryString.email = new RegExp('/' + email + '/');
+  if(typeof email !== 'undefined') {
+    queryString.email = new RegExp(email, 'i');
   }
-  if(typeof req.query.name !== undefined) {
-    queryString.role = new RegExp('/' + role + '/');
+  if(typeof role !== 'undefined') {
+    queryString.role = new RegExp(role, 'i');
   }
-  if(typeof req.query.name !== undefined) {
-    queryString.phone = new RegExp('/' + phone + '/');
+  if(typeof phone !== 'undefined') {
+    queryString.phone = new RegExp(phone, 'i');
   }
   limit = (limit === undefined ? 0 : limit);
-  db.collection(CONTACTS_COLLECTION).find({
+  db.collection(CONTACTS_COLLECTION).find(
     queryString
-  }).limit(limit).toArray(function(err, docs) {
+  ).limit(limit).toArray(function(err, docs) {
     if (err) {
       handleError(res, err.message, "Failed to get contacts.");
     } else {
@@ -116,7 +118,7 @@ app.put("/api/contacts/:id", function(req, res) {
   var updateDoc = req.body;
   delete updateDoc._id;
 
-  db.collection(CONTACTS_COLLECTION).updateOne({_id: new ObjectID(req.params.id)}, updateDoc, function(err, doc) {
+  db.collection(CONTACTS_COLLECTION).updateOne({_id: new ObjectID(req.params.id)}, { $set: updateDoc }, function(err, doc) {
     if (err) {
       handleError(res, err.message, "Failed to update contact");
     } else {
@@ -127,7 +129,11 @@ app.put("/api/contacts/:id", function(req, res) {
 });
 
 app.delete("/api/contacts/:id", function(req, res) {
-  db.collection(CONTACTS_COLLECTION).deleteOne({_id: new ObjectID(req.params.id)}, function(err, result) {
+  var updateDoc = { 
+    is_deleted: true,
+    deleted_at: new Date()
+  };
+  db.collection(CONTACTS_COLLECTION).updateOne({_id: new ObjectID(req.params.id)}, { $set: updateDoc }, function(err, result) {
     if (err) {
       handleError(res, err.message, "Failed to delete contact");
     } else {
