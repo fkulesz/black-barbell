@@ -30,7 +30,8 @@ exports.getContacts = (req, res) => {
   limit = (limit === undefined ? 0 : limit);
   Contact.find(
     queryString
-  ).limit(limit).populate('tickets').exec(function (err, docs) {
+  ).limit(limit).populate('tickets').populate('visits')
+  .exec(function (err, docs) {
     if (err) {
       handleError(res, err.message, "Failed to get contacts.");
     } else {

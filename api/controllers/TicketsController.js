@@ -7,6 +7,7 @@ exports.getTickets = (req, res) => {
   var start = req.query.start;
   var end = req.query.end;
   var price = req.query.price;
+  var uid = req.params.id;
   var limit = parseInt(req.query.limit);
   var queryString = {};
   queryString.deleted_at = null;
@@ -19,6 +20,9 @@ exports.getTickets = (req, res) => {
   }
   if (typeof price !== 'undefined') {
     queryString.price = price;
+  }
+  if (typeof uid !== 'undefined') {
+    queryString.client = uid;
   }
   limit = (limit === undefined ? 0 : limit);
   Ticket.find(

@@ -9,7 +9,9 @@ const contact = new Schema({
   email: { type: String, required: true },
   address: { type: String },
   role: { type: String, default: 'client' },
-  tickets: { type: Schema.Types.ObjectId, ref: 'tickets' },
+  // TODO: doesn't work, dunno why - returns empty arrays
+  // tickets: [{ type: Schema.Types.ObjectId, ref: 'tickets' }],
+  // visits: [{ type: Schema.Types.ObjectId, ref: 'visits'}],
   createDate: { type: Date, default: new Date() },
   deleted: { type: Boolean, default: null },
   deletet_at: { type: Date, default: null }
