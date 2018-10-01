@@ -1,5 +1,8 @@
 var Contact = require('../models/contact');
 var handleError = require('../config/app');
+const bcrypt = require('bcrypt');
+var ObjectId = require('mongoose').Types.ObjectId;
+const saltRounds = 10;
 
 exports.getContacts = (req, res) => {
   var name = req.query.name;
@@ -11,45 +14,64 @@ exports.getContacts = (req, res) => {
   var queryString = {};
   queryString.deleted_at = null;
   queryString.deleted = null;
-  if(typeof name !== 'undefined') {
+  if (typeof name !== 'undefined') {
     queryString.name = new RegExp(name, 'i');
   }
-  if(typeof lastname !== 'undefined') {
+  if (typeof lastname !== 'undefined') {
     queryString.forname = new RegExp(lastname, 'i');
   }
-  if(typeof email !== 'undefined') {
+  if (typeof email !== 'undefined') {
     queryString.email = new RegExp(email, 'i');
   }
-  if(typeof role !== 'undefined') {
+  if (typeof role !== 'undefined') {
     queryString.role = new RegExp(role, 'i');
   }
-  if(typeof phone !== 'undefined') {
+  if (typeof phone !== 'undefined') {
     queryString.phone = new RegExp(phone, 'i');
   }
   limit = (limit === undefined ? 0 : limit);
   Contact.find(
     queryString
   ).limit(limit).populate('tickets').populate('visits')
-  .exec(function (err, docs) {
-    if (err) {
-      handleError(res, err.message, "Failed to get contacts.");
-    } else {
-      res.status(200).json(docs);
-    }
-  });
+    .exec(function (err, docs) {
+      if (err) {
+        handleError(res, err.message, "Failed to get contacts.");
+      } else {
+        res.status(200).json(docs);
+      }
+    });
 }
 
 exports.newContact = (req, res) => {
   var newContact = req.body;
   newContact.start_day = new Date();
-
-  Contact.create(newContact, function (err, contact) {
-    if (err) {
-      handleError(res, err.message, err.message);
-    } else {
-      res.status(201).json(contact);
+  if (newContact.password !== undefined && newContact.password !== "") {
+    bcrypt.hash(newContact.password, saltRounds, (err, hash) => {
+      if (err) {
+        handleError(res, err.message, err.message);
+      } else {
+        newContact.password = hash;
+        Contact.create(newContact, function (err, contact) {
+          if (err) {
+            handleError(res, err.message, err.message);
+          } else {
+            res.status(201).json(contact);
+          }
+        });
+      }
+    })
+  } else {
+    if(newContact.role === 'worker' || newContact.role === 'admin') {
+      
     }
-  });
+    Contact.create(newContact, function (err, contact) {
+      if (err) {
+        handleError(res, err.message, err.message);
+      } else {
+        res.status(201).json(contact);
+      }
+    });
+  }
 }
 
 exports.getContact = (req, res) => {
@@ -79,7 +101,7 @@ exports.deleteContact = (req, res) => {
     deleted_at: new Date(),
     deleted: true
   }
-  Contact.findByIdAndUpdate({ _id: req.params.id }, { $set: updateDoc },  function(err) {
+  Contact.findByIdAndUpdate({ _id: req.params.id }, { $set: updateDoc }, function (err) {
     if (err) {
       handleError(res, err.message, err.message);
     } else {

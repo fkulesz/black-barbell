@@ -1,3 +1,4 @@
+require('dotenv').config()
 var express = require("express");
 var bodyParser = require("body-parser");
 var db = require('./api/config/db');
@@ -6,6 +7,7 @@ var contactRoutes = require('./api/routes/contacts');
 var visitRoutes = require('./api/routes/visits');
 var productRoutes = require('./api/routes/products');
 var transactionRoutes = require('./api/routes/transactions');
+var sessionRoutes = require('./api/routes/sessions');
 
 var app = express();
 
@@ -24,6 +26,7 @@ var server = app.listen(process.env.PORT || 8080, function () {
   console.log("App now running on port", port);
 });
 
+app.use('/', sessionRoutes);
 app.use('/', ticketRoutes);
 app.use('/', contactRoutes);
 app.use('/', visitRoutes);
